@@ -38,6 +38,10 @@ public class EmployeeService {
         employee.setLoanStatus(loanApproval.getLoanStatus());
         employee.setProcessInstanceId(loanApproval.getProcessInstanceId());
         employeeRepository.save(employee);
-        reviewRequestService.deleteReviewRequest(loanApproval.getProcessInstanceId());
+        try {
+            reviewRequestService.deleteReviewRequest(loanApproval.getProcessInstanceId());
+        } catch (Exception e) {
+
+        }
     }
 }

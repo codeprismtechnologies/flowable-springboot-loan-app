@@ -5,6 +5,8 @@ import org.employee_service.repo.ReviewRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ReviewRequestService {
 
@@ -17,5 +19,9 @@ public class ReviewRequestService {
 
     public void deleteReviewRequest(String processInstanceId) {
         reviewRequestRepository.deleteByProcessId(processInstanceId);
+    }
+
+    public List<ReviewRequest> getAllReviewRequests() {
+        return reviewRequestRepository.findAll();
     }
 }
