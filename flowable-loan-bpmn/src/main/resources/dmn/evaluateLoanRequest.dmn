@@ -1,0 +1,90 @@
+<definitions xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" id="definition_5d41b8ca-a256-11ef-8e96-0242ac110002" name="Evaluate Loan Request" namespace="http://www.flowable.org/dmn">
+  <decision id="evaluateLoanRequest" name="Evaluate Loan Request">
+    <decisionTable id="decisionTable_5d41b8ca-a256-11ef-8e96-0242ac110002" hitPolicy="UNIQUE">
+      <input label="Age">
+        <inputExpression id="inputExpression_3" typeRef="number">
+          <text>age</text>
+        </inputExpression>
+      </input>
+      <input label="Amount">
+        <inputExpression id="inputExpression_5" typeRef="number">
+          <text>amount</text>
+        </inputExpression>
+      </input>
+      <input label="Country">
+        <inputExpression id="inputExpression_4" typeRef="string">
+          <text>country</text>
+        </inputExpression>
+      </input>
+      <output id="outputExpression_6" label="Approval State" name="approvalState" typeRef="string">
+        <outputValues>
+          <text>"DECLINED","REVIEW","APPROVED"</text>
+        </outputValues>
+      </output>
+      <rule>
+        <inputEntry id="inputEntry_3_1">
+          <text><![CDATA[< 21]]></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_5_1">
+          <text><![CDATA[-]]></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_1">
+          <text><![CDATA[-]]></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_6_1">
+          <text><![CDATA["DECLINED"]]></text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry id="inputEntry_3_2">
+          <text><![CDATA[>= 21]]></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_5_2">
+          <text><![CDATA[>= 100000]]></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_2">
+          <extensionElements>
+            <flowable:operator xmlns:flowable="http://flowable.org/dmn">IS IN</flowable:operator>
+            <flowable:expression xmlns:flowable="http://flowable.org/dmn">"INDIA","USA"</flowable:expression>
+          </extensionElements>
+          <text><![CDATA[${collection:allOf('"INDIA","USA"', country)}]]></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_6_2">
+          <text><![CDATA["REVIEW"]]></text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry id="inputEntry_3_3">
+          <text><![CDATA[>= 21]]></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_5_3">
+          <text><![CDATA[>= 100000]]></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_3">
+          <extensionElements>
+            <flowable:operator xmlns:flowable="http://flowable.org/dmn">IS NOT IN</flowable:operator>
+            <flowable:expression xmlns:flowable="http://flowable.org/dmn">"INDIA","USA"</flowable:expression>
+          </extensionElements>
+          <text><![CDATA[${collection:noneOf('"INDIA","USA"', country)}]]></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_6_3">
+          <text><![CDATA["DECLINED"]]></text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry id="inputEntry_3_4">
+          <text><![CDATA[>= 21]]></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_5_4">
+          <text><![CDATA[< 100000]]></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_4">
+          <text><![CDATA[-]]></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_6_4">
+          <text><![CDATA["APPROVED"]]></text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

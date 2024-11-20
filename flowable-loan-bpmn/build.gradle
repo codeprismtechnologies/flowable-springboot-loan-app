@@ -1,0 +1,50 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.11'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// Spring Boot dependencies
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Database driver
+	runtimeOnly 'org.postgresql:postgresql'
+
+	// Flowable BPM engine
+	implementation 'org.flowable:flowable-spring-boot-starter:7.1.0'
+	// Flowable Engine
+	implementation 'org.flowable:flowable-engine:7.1.0'
+	implementation 'org.flowable:flowable-http:7.1.0'
+
+	// Utility libraries
+	implementation 'org.springframework:spring-core' // For ClassPathResource
+	implementation 'org.apache.commons:commons-compress:1.21' // For ZIP file handling
+
+	// Lombok (for reducing boilerplate code)
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// Test dependencies
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
