@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="serviceTask" name="Service Task" isExecutable="true">
+    <startEvent id="sid-AA656C5C-771F-4FB1-91D0-AD4A7C613B96" name="Start Event" flowable:formFieldValidation="true"></startEvent>
+    <scriptTask id="sid-A2F2D98D-7047-482B-B63E-7AA5D941B8E5" name="Script" flowable:autoStoreVariables="false" scriptFormat="javascript">
+      <script>
+        heightInMeters = execution.getVariable('height') / 100; // Convert height to meters
+        weight = execution.getVariable('weight');
+        age = execution.getVariable('age');
+
+        if (heightInMeters > 0 ) {
+        bmi = weight / (heightInMeters * heightInMeters);
+        execution.setVariable('bmi', bmi.toFixed(2)); // Store the BMI with 2 decimal points
+        } else {
+        execution.setVariable('bmi', 'Invalid input'); // Handle invalid inputs
+        }
+      </script>
+    </scriptTask>
+    <sequenceFlow id="sid-5C79420A-FBB1-4305-BC2D-85D1180531E6" sourceRef="sid-AA656C5C-771F-4FB1-91D0-AD4A7C613B96" targetRef="sid-A2F2D98D-7047-482B-B63E-7AA5D941B8E5"></sequenceFlow>
+    <endEvent id="sid-7781FA57-B3B8-470E-BE21-852788D7E47A" name="End Event"></endEvent>
+    <serviceTask id="sid-ADF184D6-1085-4EF3-A9A6-C55E9FDE51E4" name="Http" flowable:type="http">
+      <extensionElements>
+        <flowable:field name="requestMethod">
+          <flowable:string><![CDATA[POST]]></flowable:string>
+        </flowable:field>
+        <flowable:field name="requestUrl">
+          <flowable:string>http://localhost:8082/result</flowable:string>
+        </flowable:field>
+        <flowable:field name="requestHeaders">
+          <flowable:string><![CDATA[content-type: application/json]]></flowable:string>
+        </flowable:field>
+        <flowable:field name="requestBody">
+          <flowable:expression>
+            <![CDATA[{"result": "${category}","bmi":${bmi}}]]>
+          </flowable:expression>
+        </flowable:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="sid-803E2FDD-4E06-4DDA-91E8-E438F530F4C1" name="Decision" flowable:type="dmn">
+      <extensionElements>
+        <flowable:field name="decisionTableReferenceKey">
+          <flowable:string><![CDATA[bmiDecisionTable]]></flowable:string>
+        </flowable:field>
+        <flowable:field name="decisionTaskThrowErrorOnNoHits">
+          <flowable:string><![CDATA[false]]></flowable:string>
+        </flowable:field>
+        <flowable:field name="fallbackToDefaultTenant">
+          <flowable:string><![CDATA[false]]></flowable:string>
+        </flowable:field>
+
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="sid-1A1A5737-1D50-4B80-AC3D-3E656E0406C8" sourceRef="sid-A2F2D98D-7047-482B-B63E-7AA5D941B8E5" targetRef="sid-803E2FDD-4E06-4DDA-91E8-E438F530F4C1"></sequenceFlow>
+    <sequenceFlow id="sid-0F1AC7E2-2E0B-405B-8ED6-33035CC63215" sourceRef="sid-803E2FDD-4E06-4DDA-91E8-E438F530F4C1" targetRef="sid-ADF184D6-1085-4EF3-A9A6-C55E9FDE51E4"></sequenceFlow>
+    <sequenceFlow id="sid-C6AF7323-DEB0-46BD-82B2-49C7A897CAB4" sourceRef="sid-ADF184D6-1085-4EF3-A9A6-C55E9FDE51E4" targetRef="sid-7781FA57-B3B8-470E-BE21-852788D7E47A"></sequenceFlow>
+  </process>
+</definitions>
